@@ -1,0 +1,48 @@
+package uz.pdp.demo.controller;
+
+import org.springframework.http.HttpEntity;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import uz.pdp.demo.dto.EmployeeInfoDto;
+import uz.pdp.demo.dto.SalaryHistoryDto;
+import uz.pdp.demo.entity.User;
+import uz.pdp.demo.model.Response;
+import uz.pdp.demo.service.EmployeeService;
+
+import java.util.List;
+import java.util.UUID;
+
+@RestController
+@RequestMapping("/api/employee")
+public class EmployeeController {
+
+    EmployeeService employeeService;
+
+    public EmployeeController(EmployeeService employeeService) {
+        this.employeeService = employeeService;
+    }
+
+    @GetMapping("/list")
+    public HttpEntity<?> getEmployees() {
+        final List<User> userList = employeeService.getUserList();
+        return ResponseEntity.status(userList != null ? 201 : 409).body(userList);
+    }
+
+    @GetMapping("/salary")
+    public HttpEntity<?> getSalaryHistory(@RequestParam UUID userId) {
+        final Response response = employeeService.getSalaryHistoryByUserId(userId);
+        return ResponseEntity.status(response.isStatus() ? 201 : 409).body(response);
+    }
+
+    @GetMapping("/info")
+    public HttpEntity<?> getEmployeeInfo(@RequestParam UUID id) {
+        final EmployeeInfoDto employeeInfoById = employeeService.getEmployeeInfoById(id);
+        return ResponseEntity.status(employeeInfoById != null ? 201 : 409).body(employeeInfoById);
+    }
+
+    @PostMapping("/pay")
+    public HttpEntity<?> pay(@RequestParam UUID userid, @RequestParam Integer salary, @RequestBody SalaryHistoryDto salaryHistoryDto) {
+        final Response response = employeeService.pay(userid, salary, salaryHistoryDto);
+        return ResponseEntity.status(response.isStatus() ? 201 : 409).body(response);
+    }
+}
