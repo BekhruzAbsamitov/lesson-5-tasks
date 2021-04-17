@@ -3,12 +3,11 @@ package uz.pdp.demo.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import uz.pdp.demo.entity.Role;
 import uz.pdp.demo.entity.User;
 
 import javax.validation.constraints.Email;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, UUID> {
@@ -23,4 +22,5 @@ public interface UserRepository extends JpaRepository<User, UUID> {
             nativeQuery = true)
     List<User> findAllByRoleId(Integer id);
 
+    List<User> findAllByRolesIn(Collection<Set<Role>> roles);
 }
